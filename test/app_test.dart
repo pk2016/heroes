@@ -53,8 +53,8 @@ void selectHeroTests() {
     await appPO.selectHero(5);
   });
 
-  test('is selected', () {
-    expect(appPO.selected, targetHero);
+  test('is selected', () async {
+    expect(await appPO.selected, targetHero);
   });
 
   test('show hero details', () {
