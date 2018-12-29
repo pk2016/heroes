@@ -10,52 +10,24 @@ abstract class AppPO {
   factory AppPO.create(PageLoaderElement context) = $AppPO.create;
 
   @ByTagName('h1')
-  PageLoaderElement get _pageTitle;
+  PageLoaderElement get _h1;
 
-  @First(ByCss('h2'))
-  PageLoaderElement get _tabTitle;
+  @ByCss('nav a')
+  List<PageLoaderElement> get _tabLinks;
 
-  @ByTagName('li')
-  List<PageLoaderElement> get _heroes;
+  @ByTagName('my-dashboard')
+  PageLoaderElement get _myDashboard;
 
-  @ByTagName('li')
-  @WithClass('selected')
-  PageLoaderElement get _selected;
+  @ByTagName('my-heroes')
+  PageLoaderElement get _myHeroes;
 
-  @First(ByCss('div h2'))
-  PageLoaderElement get _heroDetailHeading;
+  String get pageTitle => _h1.visibleText;
 
-  @First(ByCss('div div'))
-  PageLoaderElement get _heroDetailId;
+  Iterable<String> get tabTitles => _tabLinks.map((el) => el.visibleText);
 
-  @ByTagName('input')
-  PageLoaderElement get _input;
+  Future<void> selectTab(int index) => _tabLinks[index].click();
 
-  String get pageTitle => _pageTitle.visibleText;
-  String get tabTitle => _tabTitle.visibleText;
+  bool get dashboardTabIsActive => _myDashboard.exists;
 
-  Iterable<Map> get heroes =>
-      _heroes.map((el) => _heroDataFromLi(el.visibleText));
-
-  Future<void> selectHero(int index) => _heroes[index].click();
-
-  Map get selected =>
-      _selected.exists ? _heroDataFromLi(_selected.visibleText) : null;
-
-  Map get heroFromDetails {
-    if (!_heroDetailId.exists) return null;
-    final idAsString = _heroDetailId.visibleText.split(':')[1];
-    return _heroData(idAsString, _heroDetailHeading.visibleText);
-  }
-
-  Future<void> clear() => _input.clear();
-  Future<void> type(String s) => _input.type(s);
-
-  Map<String, dynamic> _heroData(String idAsString, String name) =>
-      {'id': int.tryParse(idAsString) ?? -1, 'name': name};
-
-  Map<String, dynamic> _heroDataFromLi(String liText) {
-    final matches = RegExp((r'^(\d+) (.*)$')).firstMatch(liText);
-    return _heroData(matches[1], matches[2]);
-  }
+  bool get heroesTabIsActive => _myHeroes.exists;
 }

@@ -1,10 +1,12 @@
+import 'dart:async';
 
 import 'package:pageloader/pageloader.dart';
+import 'utils.dart';
 
-part 'hero_detail_po.g.dart';
+part 'hero_po.g.dart';
 
 @PageObject()
-abstract class HeroDetailPO{
+abstract class HeroDetailPO {
   HeroDetailPO();
   factory HeroDetailPO.create(PageLoaderElement context) = $HeroDetailPO.create;
 
@@ -17,15 +19,17 @@ abstract class HeroDetailPO{
   @ByTagName('input')
   PageLoaderElement get _input;
 
-  Map get heroFromDetails{
-    if(!_id.exists) return null;
+  @ByTagName('button')
+  PageLoaderElement get _button;
+
+  Map get heroFromDetails {
+    if (!_id.exists) return null;
     final idAsString = _id.visibleText.split(':')[1];
-    return _heroData(idAsString,_title.visibleText);
+    return heroData(idAsString, _title.visibleText);
   }
 
   Future<void> clear() => _input.clear();
   Future<void> type(String s) => _input.type(s);
 
-  Map<String, dynamic> _heroData(String idAsString, String name) =>
-      {'id':int.tryParse(idAsString)??-1, 'name':name};
+  Future<void> back() => _button.click();
 }
